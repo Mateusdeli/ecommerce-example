@@ -1,22 +1,4 @@
-import { Job, JobsOptions } from 'bullmq'
-import mail from '../../../libs/mail'
-
-const options: JobsOptions = {}
-
-export default {
-    name: 'EmailConfirmPayment',
-    options,
-    async handle(job: Job) {
-        await mail.sendMail({
-            subject: 'Confirmação Pagamento',
-            from: 'teste@teste.com',
-            to: job.data.user.email,
-            html: templateEmail(job.data),
-        })
-    }
-}
-
-const templateEmail = (data: any) => {
+export default (data: any) => {
     return `
         <p>
             Olá

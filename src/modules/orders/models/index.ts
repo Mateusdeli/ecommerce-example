@@ -4,7 +4,6 @@ import Product from "./product";
 export default class Order {
     private products: Product[]
     constructor(
-        readonly total: number,
         readonly user: User,
     ) {
         this.products = []

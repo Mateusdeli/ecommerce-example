@@ -1,13 +1,13 @@
 import { Queue, Worker } from 'bullmq'
-import redis from '../configs/redis'
-import * as jobs from '../jobs'
+import redis from '../../configs/redis'
+import * as jobs from './jobs'
 
 const connection = {
     host: redis.host,
     port: Number(redis.port)
 }
 
-const queues = Object.values(jobs).map((job) => ({
+const queues = Object.values(jobs.default).map((job) => ({
     provider: new Queue(job.name, { connection }),
     name: job.name,
     handle: job.handle,
