@@ -1,0 +1,64 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    container_name: app-payment-prod
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - .:/home/app/payment
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - redis
+      - db
+
+  ngrok:
+    image: ngrok/ngrok:alpine
+    container_name: ngrok-payment-prod
+    restart: always
+    env_file:
+      - .env
+    environment:
+        NGROK_AUTHTOKEN: '${NGROK_AUTHTOKEN}'
+    command: 'http web:3000'        
+    ports:
+        - 4040:4040
+    depends_on:
+      - web
+
+  redis:
+    image: redis:alpine3.17
+    container_name: redis-payment-prod
+    restart: always
+
+  db:
+    container_name: db-payment-prod
+    image: postgres
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+  adminer:
+    container_name: db-dashboard-payment-prod
+    image: adminer
+    restart: always
+    links:
+      - db
+    ports:
+      - 8080:8080
+
+  # mongo:
+  #   image: mongo:4
+  #   container_name: mongo-payment
+  #   restart: always
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - 27017:27017
