@@ -1,0 +1,26 @@
+POST http://localhost:3001/v1/payments HTTP/1.1
+Content-Type: application/json 
+
+{
+  "card": {
+    "number": "1564654654445",
+    "cvc": "1234",
+    "owner": "Mateus D."
+  },
+  "customer": {
+    "name": "Mateus",
+    "email": "teste@teste.com"
+  },
+  "products": [
+    {
+      "name": "Teste",
+      "price": 10.5,
+      "quantity": 1
+    },
+    {
+      "name": "Teste",
+      "price": 20,
+      "quantity": 2
+    }
+  ]
+}

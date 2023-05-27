@@ -1,46 +1,39 @@
 import passport from 'passport';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 import { Strategy as LocalStrategy } from 'passport-local'
-import jwtConfig from '../config/jwt';
+import jwtConfig from '../config/token';
 import AuthRepository from '../repositories/index.repository';
 import AuthService from '../services/index.service';
-import crypto from '../../../libs/crypto';
 import Database from '../../../libs/database';
 
 const authService = new AuthService(new AuthRepository(new Database))
 
 passport.use('signup', new LocalStrategy({
     usernameField: 'email',
-    passwordField: 'password'
-  }, async (email, password, done) => {
+    passwordField: 'password',
+    passReqToCallback: true
+  }, async (req, email, password, done) => {
     try {
-        const user = await authService.signup({ email, password });
+        const { name } = req.body
+        if (!name) {
+          return done(null, false, { message: 'Name is required.' });
+        }
+        const user = await authService.signup({ name, email, password });
         return done(null, user);
     } catch (error) {
         done(error);
     }
 }));
 
-passport.use('login', new LocalStrategy({
+passport.use('signin', new LocalStrategy({
     usernameField: 'email',
-    passwordField: 'password'
+    passwordField: 'password',
   }, async (email, password, done) => {
     try {
-        const user = await authService.getUser({ email })
-
-        if (!user) {
-          return done(null, false, { message: 'Login failed, try again.' })
-        }
-
-        const passwordDecrypted = await crypto.decrypt(user.password)
-        
-        if (password !== passwordDecrypted) {
-          return done(null, false, { message: 'Login failed, try again.' })
-        }
-
-        return done(null, user, { message: 'Logged in Successfully' });
-      } catch (error) {
-        return done(error);
+        const data = await authService.signin({ email, password })
+        return done(null, { ...data }, { message: 'Logged in Successfully' });
+      } catch (error: any) {
+        return done(null, false, { message: error });
       }
 }));
 

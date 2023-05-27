@@ -3,5 +3,5 @@ import * as authRoutes from '../modules/auth/routes/index.route'
 
 export default {
     ...orderRoutes,
-    ...authRoutes
+    ...authRoutes,
 }

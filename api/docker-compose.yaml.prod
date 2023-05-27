@@ -1,42 +1,48 @@
 version: '3'
 
 services:
-  redis:
-    image: redis:alpine3.17
-    container_name: redis-payment-dev
+  app:
+    build:
+      dockerfile: ./Dockerfile
+    container_name: app-ecommerce
     restart: always
     env_file:
       - .env
     ports:
-      - ${REDIS_PORT}:${REDIS_PORT}
+      - ${PORT}:${PORT}
+    depends_on:
+      - db
+      - redis
+
+  redis:
+    image: redis:alpine3.17
+    container_name: redis-ecommerce
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - ${REDIS_PORT}
 
   db:
-    container_name: db-payment-dev
+    container_name: db-ecommerce
     image: postgres
     restart: always
     env_file:
       - .env
     ports:
-      - ${DB_PORT}:${DB_PORT}
+      - ${DB_PORT}
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
 
   adminer:
-    container_name: db-dashboard-payment-dev
+    container_name: db-dashboard-ecommerce
     image: adminer
     restart: always
     links:
       - db
     ports:
       - 8080:8080
-
-  # mongo:
-  #   image: mongo:4
-  #   container_name: mongo-payment
-  #   restart: always
-  #   env_file:
-  #     - .env
-  #   ports:
-  #     - 27017:27017
+    depends_on:
+      - db

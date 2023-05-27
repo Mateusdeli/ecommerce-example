@@ -11,6 +11,9 @@ const UserSchema: BaseSchema = {
             allowNull: false,
             primaryKey: true
         },
+        name: {
+            type: DataTypes.STRING,
+        },
         email: {
           type: DataTypes.STRING,
           unique: true,
