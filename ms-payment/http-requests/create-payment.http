@@ -11,6 +11,9 @@ Content-Type: application/json
     "name": "Mateus",
     "email": "teste@teste.com"
   },
+  "webhook": {
+    "url": "http://localhost:8000/webhook"
+  },
   "products": [
     {
       "name": "Teste",

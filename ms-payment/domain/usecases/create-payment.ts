@@ -1,4 +1,4 @@
-import Payment from "../models/payment";
+import { Payment } from "../models/payment";
 import { Transaction } from "../models/transaction";
 
 export interface CreatePayment {
